@@ -114,3 +114,4 @@ if __name__ == '__main__':
     output_image = resize_image(image, new_size)
     output_path = generate_output_path(args.filepath, output_image, args.out)
     save_image_to_file(output_image, output_path)
+    print('Image successfully resized:', output_path)
