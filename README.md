@@ -20,11 +20,16 @@ Example with image flavicon.jpg with size 630x630:
 $ python image_resize.py flavicon.jpg --scale 0.5
 Image successfully resized: flavicon_315x315.jpg
 
-$ python image_resize.py flavicon.jpg --w 100 --out c:\Work\python\git\
-Image successfully resized: c:\Work\python\git\flavicon_100x100.jpg
+$ python image_resize.py flavicon.jpg --width 700
+Image successfully resized: flavicon_700x700.jpg
 
-$ python image_resize.py flavicon.jpg --w 100 --h 80 --out c:\Work\python\git\
+$ python image_resize.py flavicon.jpg --height 80
+Image successfully resized: flavicon_80x80.jpg
+
+$ python image_resize.py flavicon.jpg --width 100 --height 80 --out c:\Work\python\git\
+Warning: the image ratio was changed!
 Image successfully resized: c:\Work\python\git\flavicon_100x80.jpg
+
 
 ```
 

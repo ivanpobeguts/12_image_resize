@@ -53,13 +53,13 @@ def get_parser():
         type=str,
     )
     parser.add_argument(
-        '--w',
+        '--width',
         help='width of output image',
         default=0,
         type=int,
     )
     parser.add_argument(
-        '--h',
+        '--height',
         help='height of output image',
         default=0,
         type=int,
@@ -71,7 +71,7 @@ def get_parser():
         type=float,
     )
     parser.add_argument(
-        '--out',
+        '--output',
         help='path to output image file',
         default='',
         type=str,
@@ -82,15 +82,15 @@ def get_parser():
 
 def check_args(parser):
     args = parser.parse_args()
-    if not any((args.w, args.h, args.scale)):
+    if not any((args.width, args.height, args.scale)):
         parser.error(
             'Parameters expected',
         )
-    if args.scale and (args.w or args.h):
+    if args.scale and (args.width or args.height):
         parser.error(
             "You cant't use both scale and size (width/height)",
         )
-    if args.out and not os.path.isdir(args.out):
+    if args.output and not os.path.isdir(args.output):
         parser.error(
             'Output path is not a directory or does not exist',
         )
@@ -110,8 +110,10 @@ def generate_output_path(input_image_path, output_image, output_image_path=None)
 if __name__ == '__main__':
     args = get_parser().parse_args()
     image = load_image(args.filepath)
-    new_size = calculate_new_image_size(image.size, args.scale, args.w, args.h)
+    new_size = calculate_new_image_size(image.size, args.scale, args.width, args.height)
     output_image = resize_image(image, new_size)
-    output_path = generate_output_path(args.filepath, output_image, args.out)
+    if is_ratio_changed(image.size, new_size):
+        print('Warning: the image ratio was changed!')
+    output_path = generate_output_path(args.filepath, output_image, args.output)
     save_image_to_file(output_image, output_path)
     print('Image successfully resized:', output_path)
