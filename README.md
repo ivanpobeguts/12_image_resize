@@ -26,7 +26,7 @@ Image successfully resized: flavicon_700x700.jpg
 $ python image_resize.py flavicon.jpg --height 80
 Image successfully resized: flavicon_80x80.jpg
 
-$ python image_resize.py flavicon.jpg --width 100 --height 80 --out c:\Work\python\git\
+$ python image_resize.py flavicon.jpg --width 100 --height 80 --output c:\Work\python\git\
 Warning: the image ratio was changed!
 Image successfully resized: c:\Work\python\git\flavicon_100x80.jpg
 
