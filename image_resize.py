@@ -101,7 +101,9 @@ def generate_output_path(input_image_path, output_image, output_image_path=None)
     filename, extension = os.path.splitext(input_image_path)
     if output_image_path:
         return '{}_{}x{}{}'.format(
-            os.path.join(output_image_path, filename), output_image_width, output_image_height, extension)
+            os.path.join(output_image_path, filename),
+            output_image_width,
+            output_image_height, extension)
     else:
         return '{}_{}x{}{}'.format(
             filename, output_image_width, output_image_height, extension)
@@ -110,10 +112,12 @@ def generate_output_path(input_image_path, output_image, output_image_path=None)
 if __name__ == '__main__':
     args = get_parser().parse_args()
     image = load_image(args.filepath)
-    new_size = calculate_new_image_size(image.size, args.scale, args.width, args.height)
+    new_size = calculate_new_image_size(
+        image.size, args.scale, args.width, args.height)
     output_image = resize_image(image, new_size)
     if is_ratio_changed(image.size, new_size):
         print('Warning: the image ratio was changed!')
-    output_path = generate_output_path(args.filepath, output_image, args.output)
+    output_path = generate_output_path(
+        args.filepath, output_image, args.output)
     save_image_to_file(output_image, output_path)
     print('Image successfully resized:', output_path)
