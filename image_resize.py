@@ -15,7 +15,7 @@ def calculate_new_image_size(original_size,
         return (round(orig_width * scale),
                 round(orig_height * scale))
     elif width:
-        return (width, round((width * orig_height) / orig_width))
+        return width, round((width * orig_height) / orig_width)
     elif height:
         return round((height * orig_width) / orig_height), height
     else:
