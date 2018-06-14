@@ -3,14 +3,19 @@ import os
 import argparse
 
 
-def calculate_new_image_size(original_size, scale=None, width=None, height=None):
+def calculate_new_image_size(original_size,
+                             scale=None,
+                             width=None,
+                             height=None):
+
     orig_width, orig_height = original_size
     if width and height:
         return width, height
     elif scale:
-        return round(orig_width * scale), round(orig_height * scale)
+        return (round(orig_width * scale),
+                round(orig_height * scale))
     elif width:
-        return width, round((width * orig_height) / orig_width)
+        return (width, round((width * orig_height) / orig_width))
     elif height:
         return round((height * orig_width) / orig_height), height
     else:
@@ -24,9 +29,9 @@ def is_ratio_changed(img_size, new_img_size):
     )
 
 
-def resize_image(image, size):
-    out = image.resize(size)
-    return out
+def resize_image(img, size):
+    resized_image = img.resize(size)
+    return resized_image
 
 
 def load_image(filepath):
@@ -45,7 +50,7 @@ def save_image_to_file(output_image, output_image_filepath):
         return False
 
 
-def get_parser():
+def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         'filepath',
@@ -76,41 +81,55 @@ def get_parser():
         default='',
         type=str,
     )
-    check_args(parser)
-    return parser
+    args = check_args(parser)
+    return args
 
 
 def check_args(parser):
     args = parser.parse_args()
+    if not os.path.isfile(args.filepath):
+        parser.error(
+            "Source image doesn't exist"
+        )
     if not any((args.width, args.height, args.scale)):
         parser.error(
             'Parameters expected',
         )
+    if any(arg < 0 for arg in (args.width, args.height, args.scale)):
+        parser.error(
+            "Parameters can't be less than 0",
+        )
     if args.scale and (args.width or args.height):
         parser.error(
-            "You cant't use both scale and size (width/height)",
+            "You can't use both scale and size (width/height)",
         )
     if args.output and not os.path.isdir(args.output):
         parser.error(
             'Output path is not a directory or does not exist',
         )
+    return args
 
 
-def generate_output_path(input_image_path, output_image, output_image_path=None):
-    output_image_width, output_image_height = output_image.size
+def generate_output_path(input_image_path,
+                         output_image_size,
+                         output_image_path=None):
+
+    output_image_width, output_image_height = output_image_size
     filename, extension = os.path.splitext(input_image_path)
+
+    output_path = '{}_{}x{}{}'.format(
+        os.path.join(output_image_path, filename),
+        output_image_width,
+        output_image_height, extension)
+
     if output_image_path:
-        return '{}_{}x{}{}'.format(
-            os.path.join(output_image_path, filename),
-            output_image_width,
-            output_image_height, extension)
+        return os.path.join(output_path)
     else:
-        return '{}_{}x{}{}'.format(
-            filename, output_image_width, output_image_height, extension)
+        return output_path
 
 
 if __name__ == '__main__':
-    args = get_parser().parse_args()
+    args = get_args()
     image = load_image(args.filepath)
     new_size = calculate_new_image_size(
         image.size, args.scale, args.width, args.height)
@@ -118,6 +137,6 @@ if __name__ == '__main__':
     if is_ratio_changed(image.size, new_size):
         print('Warning: the image ratio was changed!')
     output_path = generate_output_path(
-        args.filepath, output_image, args.output)
+        args.filepath, output_image.size, args.output)
     save_image_to_file(output_image, output_path)
     print('Image successfully resized:', output_path)
