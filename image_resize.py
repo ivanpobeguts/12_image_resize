@@ -3,10 +3,12 @@ import os
 import argparse
 
 
-def calculate_new_image_size(original_size,
-                             scale=None,
-                             width=None,
-                             height=None):
+def calculate_new_image_size(
+    original_size,
+    scale=None,
+    width=None,
+    height=None,
+):
 
     orig_width, orig_height = original_size
     if width and height:
@@ -35,11 +37,8 @@ def resize_image(img, size):
 
 
 def load_image(filepath):
-    try:
-        source_image = Image.open(filepath)
-        return source_image
-    except OSError:
-        return None
+    source_image = Image.open(filepath)
+    return source_image
 
 
 def save_image_to_file(output_image, output_image_filepath):
@@ -110,9 +109,11 @@ def check_args(parser):
     return args
 
 
-def generate_output_path(input_image_path,
-                         output_image_size,
-                         output_image_path=None):
+def generate_output_path(
+    input_image_path,
+    output_image_size,
+    output_image_path=None,
+):
 
     output_image_width, output_image_height = output_image_size
     filename, extension = os.path.splitext(input_image_path)
@@ -121,11 +122,7 @@ def generate_output_path(input_image_path,
         os.path.join(output_image_path, filename),
         output_image_width,
         output_image_height, extension)
-
-    if output_image_path:
-        return os.path.join(output_path)
-    else:
-        return output_path
+    return output_path
 
 
 if __name__ == '__main__':
@@ -134,7 +131,7 @@ if __name__ == '__main__':
     new_size = calculate_new_image_size(
         image.size, args.scale, args.width, args.height)
     output_image = resize_image(image, new_size)
-    if is_ratio_changed(image.size, new_size):
+    if args.width and args.height and is_ratio_changed(image.size, new_size):
         print('Warning: the image ratio was changed!')
     output_path = generate_output_path(
         args.filepath, output_image.size, args.output)
